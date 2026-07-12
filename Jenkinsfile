@@ -2,11 +2,17 @@ pipeline {
     agent any
 
     environment {
+        JAVA_HOME   = '/usr/lib/jvm/temurin-17-jdk-amd64'
+        PATH        = "${JAVA_HOME}/bin:${env.PATH}"
         IMAGE_NAME  = "localhost:5000/employee-service"
         IMAGE_TAG   = "${env.BUILD_NUMBER}"
-        // SONAR_TOKEN = credentials('sonar-token')   // not needed until Sonar stage is re-enabled
+        // SONAR_TOKEN = credentials('sonar-token')
     }
     stages {
+        stage('Verify Java') {
+            steps { sh 'java -version' }
+        }
+
         stage('Checkout') { steps { checkout scm } }
 
         stage('Compile') { steps { sh 'mvn -B compile' } }
@@ -20,13 +26,10 @@ pipeline {
         stage('Code Quality - SonarQube') {
             steps { sh "mvn -B sonar:sonar -Dsonar.token=${SONAR_TOKEN} -Dsonar.host.url=http://host.docker.internal:9000" }
         }
-
         stage('Package') { steps { sh 'mvn -B package -DskipTests' } }
-
         stage('Docker Build') {
             steps { sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ." }
         }
-
         stage('Docker Push') {
             steps { sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}" }
         }
