@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 //Employee Service - CRUD REST API - EMP-101
 public class EmployeeServiceApplication {
     public static void main(String[] args) {
+    	System.out.println("helllo");
         SpringApplication.run(EmployeeServiceApplication.class, args);
     }
 }
