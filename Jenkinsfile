@@ -1,10 +1,6 @@
 pipeline {
-    agent {
-        docker {
-            image 'maven:3.9.6-eclipse-temurin-17'
-            args '-v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
+    agent any
+
     environment {
         IMAGE_NAME  = "localhost:5000/employee-service"
         IMAGE_TAG   = "${env.BUILD_NUMBER}"
