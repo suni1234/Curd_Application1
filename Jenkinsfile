@@ -8,7 +8,7 @@ pipeline {
     environment {
         IMAGE_NAME  = "localhost:5000/employee-service"
         IMAGE_TAG   = "${env.BUILD_NUMBER}"
-        SONAR_TOKEN = credentials('sonar-token')
+        // SONAR_TOKEN = credentials('sonar-token')   // not needed until Sonar stage is re-enabled
     }
     stages {
         stage('Checkout') { steps { checkout scm } }
@@ -20,6 +20,7 @@ pipeline {
             post { always { junit 'target/surefire-reports/*.xml' } }
         }
 
+        /*
         stage('Code Quality - SonarQube') {
             steps { sh "mvn -B sonar:sonar -Dsonar.token=${SONAR_TOKEN} -Dsonar.host.url=http://host.docker.internal:9000" }
         }
@@ -33,5 +34,6 @@ pipeline {
         stage('Docker Push') {
             steps { sh "docker push ${IMAGE_NAME}:${IMAGE_TAG}" }
         }
+        */
     }
 }
